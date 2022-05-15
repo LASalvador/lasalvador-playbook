@@ -1,0 +1,77 @@
+- name: LASalvadoPlaybook
+  hosts: all
+  vars:
+    current_user: lucas
+    os_release: jammy
+  tasks:
+    - name: Install dependencies with apt
+      delegate_to: localhost
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: 'yes'
+      with_items:
+        - vim
+        - git
+        - curl
+        - chromium-browser
+        - python3-pip
+          
+    - name: Install dependencies with snapn
+      delegate_to: localhost
+      community.general.snap:
+        name: 
+          - postman
+          - code
+          - insomnia
+          - intellij-idea-community
+          - mysql-workbench-community
+        classic: 'yes'
+    - name: 'Create git alias'
+      delegate_to: localhost
+      become: yes
+      become_flags: -i
+      become_user: "{{ current_user }}"
+      git_config:
+        name: "alias.{{item.name}}"
+        scope: global
+        value: "{{item.value}}"
+      with_items:
+      - { name: "st", value: "status"}
+      - { name: "a", value: "add"}
+      - { name: "branches", value: "!git branch -a"}
+      - { name: "co", value: "checkout"}
+      - { name: "ps", value: "!git pull && git push"}
+      - { name: "f", value: "fetch"}
+      - { name: "cm", value: "!git commit -m"}
+    - name: 'Setup git identity'
+      delegate_to: localhost
+      become: yes
+      become_flags: -i
+      become_user: "{{ current_user }}"
+      git_config:
+        name: "user.{{item.name}}"
+        scope: global
+        value: "{{item.value}}"
+      with_items:
+       - { name: "name", value: "Lucas Salvador"}
+       - { name: "email", value: "lucas.salvador11358@gmail.com"}
+
+          
+  roles:
+    - role: gantsign.sdkman
+      sdkman_users:
+        - "{{ current_user }}"
+    - docker
+    - kdenlive
+    - peek
+    - nvm
+    - role: gantsign.oh-my-zsh
+      users:
+        - username: "{{ current_user }}"
+          oh_my_zsh:
+            theme: clean
+            plugins: 
+              - git
+              - mvn
+    - zinit

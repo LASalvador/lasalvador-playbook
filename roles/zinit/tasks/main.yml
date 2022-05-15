@@ -1,0 +1,37 @@
+- name: Setup Node
+  become: yes
+  become_flags: -i # Execute config files such as .profile (Ansible uses non-interactive login shells)
+  become_user: "{{ current_user }}"
+  block:
+  - name: Check if zinit installed
+    stat:
+      path: "$HOME/.zinit"
+    register: zinit_installed
+
+  - name: Download zinit installer
+    get_url:
+      url: https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh
+      dest: $HOME/zinit-installer.sh
+      mode: 0755
+    when: zinit_installed.stat.isdir is not defined or not zinit_installed.stat.isdir
+
+  - name: Execute the zinit installer
+    shell: $HOME/zinit-installer.sh
+    when: zinit_installed.stat.isdir is not defined or not zinit_installed.stat.isdir
+
+  - name: Remove the zinit installer
+    file:
+      path: $HOME/zinit-installer.sh
+      state: absent
+    when: zinit_installed.stat.isdir is not defined or not zinit_installed.stat.isdir
+
+  - name: Adding zinit pluggin on zsh
+    lineinfile:
+      path: $HOME/.zshrc
+      line: "{{ item }}"
+    with_items:
+     - zinit light zdharma/fast-syntax-highlighting
+     - zinit light zsh-users/zsh-autosuggestions
+     - zinit light zsh-users/zsh-completions
+    when: zinit_installed.stat.isdir is not defined or not zinit_installed.stat.isdir
+    

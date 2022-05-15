@@ -1,0 +1,9 @@
+- name: Adding peek repository
+  apt_repository:
+    repo: ppa:peek-developers/stable
+
+- name: Install Peek
+  apt:
+    name: peek
+    state: present
+    update_cache: 'yes'

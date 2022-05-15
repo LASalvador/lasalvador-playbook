@@ -1,0 +1,9 @@
+- name: Adding kdenlive repository
+  apt_repository:
+    repo: ppa:kdenlive/kdenlive-stable
+
+- name: Install Kdenlive
+  apt:
+    name: kdenlive
+    state: present
+    update_cache: 'yes'

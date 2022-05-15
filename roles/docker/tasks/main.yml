@@ -1,0 +1,56 @@
+- name: Install docker dependencies with apt
+  delegate_to: localhost
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: 'yes'
+  with_items:
+    - ca-certificates
+    - gnupg
+    - lsb-release
+
+- name: Adding docker GPG key
+  delegate_to: localhost
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Adding docker repository
+  delegate_to: localhost
+  apt_repository: 
+    repo: "deb https://download.docker.com/linux/ubuntu {{ os_release }} stable"
+    state: present
+
+- name: Install docker
+  delegate_to: localhost
+  apt:
+    name:
+     - docker-ce
+     - docker-ce-cli
+     - containerd.io
+     - docker-compose-plugin
+
+- name: Adding current user on docker group
+  delegate_to: localhost
+  user:
+    name: "{{ current_user }}"
+    group: docker
+
+- name: Changing docker sock group
+  delegate_to: localhost
+  file: 
+    path: "{{ item.src }}"
+    state: "{{ item.state }}"
+    recurse: "{{ item.recurse }}" 
+    owner: root
+    group: docker
+  loop:
+    - { src: "/var/run/docker.sock" , state: "file", recurse: "no" }
+    - { src: "/var/run/docker" , state: "directory", recurse: "yes" }
+
+- name: Active change on groups
+  delegate_to: localhost
+  command: newgrp docker
+
+
+    
