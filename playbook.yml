@@ -26,6 +26,8 @@
           - insomnia
           - intellij-idea-community
           - mysql-workbench-community
+          - notion-snap
+          - spotify
         classic: 'yes'
     - name: 'Create git alias'
       delegate_to: localhost
