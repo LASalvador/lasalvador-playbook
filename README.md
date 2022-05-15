@@ -6,12 +6,17 @@
 ## Pre running
 
 *CHANGE THE VARIABLES IN THE PLAYBOOK.YML*
+
 current_user = current user on machine (ex lucas)
+
 os_release = "lsb_release -cs"
 
 ## Running
+
 > sudo ansible-galaxy install gantsign.sdkman
+
 > sudo ansible-galaxy install gantsign.oh-my-zsh
+
 > sudo ansible-playbook -i host playbook.yml
 
 ## Post running
