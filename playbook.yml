@@ -28,6 +28,7 @@
           - mysql-workbench-community
           - notion-snap
           - spotify
+          - discord
         classic: 'yes'
     - name: 'Create git alias'
       delegate_to: localhost
