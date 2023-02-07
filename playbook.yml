@@ -16,6 +16,7 @@
         - curl
         - chromium-browser
         - python3-pip
+        - net-tools
           
     - name: Install dependencies with snapn
       delegate_to: localhost
